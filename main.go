@@ -3,11 +3,17 @@ package main
 import (
 	"bayarind-sandbox/handler"
 
+	appMiddleware "bayarind-sandbox/middleware"
+
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
 	e := echo.New()
+
+	e.Use(appMiddleware.RequestLoggerMiddleware)
+	e.Use(middleware.Logger())
 
 	// Define route
 	e.POST("/v1.0/transfer-va/create-va", handler.CreateVA)

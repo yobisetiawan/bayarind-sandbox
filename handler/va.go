@@ -64,7 +64,7 @@ type Description struct {
 }
 
 type AdditionalInfo struct {
-	InsertId int `json:"insertId,omitempty"`
+	InsertId string `json:"insertId,omitempty"`
 }
 
 // ========== GENERIC ERROR RESPONSE ==========
