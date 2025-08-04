@@ -8,6 +8,14 @@ import (
 )
 
 // ========== STRUCT REQUEST ==========
+
+type VirtualAccountDeleteRequest struct {
+	PartnerServiceId string `json:"partnerServiceId"`
+	CustomerNo       string `json:"customerNo"`
+	VirtualAccountNo string `json:"virtualAccountNo"`
+	TrxId            string `json:"trxId"`
+}
+
 type VirtualAccountRequest struct {
 	PartnerServiceId    string         `json:"partnerServiceId"`
 	CustomerNo          string         `json:"customerNo"`
@@ -69,6 +77,7 @@ func errorResponse(c echo.Context, message string) error {
 }
 
 // ========== MAIN HANDLER ==========
+// Note: The CreateVA function is a placeholder and does not implement actual creation logic.
 func CreateVA(c echo.Context) error {
 	// ===== Header Validation =====
 	headers := []string{
@@ -120,6 +129,45 @@ func CreateVA(c echo.Context) error {
 			BillDetails:         req.BillDetails,
 			ExpiredDate:         expiredDate,
 			AdditionalInfo:      req.AdditionalInfo,
+		},
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+// Note: The DeleteVA function is a placeholder and does not implement actual deletion logic.
+func DeleteVA(c echo.Context) error {
+	// ===== Header Validation =====
+	headers := []string{
+		"X-TIMESTAMP", "X-SIGNATURE", "X-PARTNER-ID", "X-EXTERNAL-ID", "CHANNEL-ID",
+	}
+
+	for _, h := range headers {
+		if c.Request().Header.Get(h) == "" {
+			return errorResponse(c, "Missing required header: "+h)
+		}
+	}
+
+	// ===== Bind Body =====
+	var req VirtualAccountDeleteRequest
+	if err := c.Bind(&req); err != nil {
+		return errorResponse(c, "Invalid JSON format")
+	}
+
+	// ===== Field Validation =====
+	if req.VirtualAccountNo == "" {
+		return errorResponse(c, "Missing required field: virtualAccountNo")
+	}
+
+	// ===== Success Response =====
+	resp := VirtualAccountResponse{
+		ResponseCode:    "2003100",
+		ResponseMessage: "Success",
+		VirtualAccount: VirtualAccountData{
+			PartnerServiceId: req.PartnerServiceId,
+			CustomerNo:       req.CustomerNo,
+			VirtualAccountNo: req.VirtualAccountNo,
+			TrxId:            req.TrxId,
 		},
 	}
 
