@@ -15,11 +15,11 @@ func main() {
 	e.Use(appMiddleware.RequestLoggerMiddleware)
 	e.Use(middleware.Logger())
 
-	// Define route
 	e.POST("/v1.0/transfer-va/create-va", handler.CreateVA)
 
-	// Define route
 	e.DELETE("/v1.0/transfer-va/delete-va", handler.DeleteVA)
+
+	e.POST("/v1.0/transfer-va/status", handler.StatusVa)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":7000"))

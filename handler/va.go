@@ -173,3 +173,92 @@ func DeleteVA(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+// ========== STRUCTS FOR STATUS VA RESPONSE ==========
+type PaidAmount struct {
+	Currency string `json:"currency"`
+	Value    string `json:"value"`
+}
+
+type StatusVaVirtualAccountData struct {
+	PartnerServiceId string     `json:"partnerServiceId"`
+	CustomerNo       string     `json:"customerNo"`
+	VirtualAccountNo string     `json:"virtualAccountNo"`
+	InquiryRequestId string     `json:"inquiryRequestId"`
+	PaymentRequestId string     `json:"paymentRequestId"`
+	PaidAmount       PaidAmount `json:"paidAmount"`
+	TotalAmount      PaidAmount `json:"totalAmount"`
+	ReferenceNo      string     `json:"referenceNo"`
+	TrxDateTime      string     `json:"trxDateTime"`
+	TransactionDate  string     `json:"transactionDate"`
+}
+
+type StatusVaAdditionalInfo struct {
+	InsertId   string `json:"insertId"`
+	TagId      string `json:"tagId"`
+	TrxStatus  string `json:"trxStatus"`
+	TrxMessage string `json:"trxMessage"`
+}
+
+type StatusVaResponse struct {
+	ResponseCode       string                     `json:"responseCode"`
+	ResponseMessage    string                     `json:"responseMessage"`
+	VirtualAccountData StatusVaVirtualAccountData `json:"virtualAccountData"`
+	AdditionalInfo     StatusVaAdditionalInfo     `json:"additionalInfo"`
+}
+
+type StatusVaErrorResponse struct {
+	ResponseCode       string                 `json:"responseCode"`
+	ResponseMessage    string                 `json:"responseMessage"`
+	VirtualAccountData map[string]interface{} `json:"virtualAccountData"`
+}
+
+// ========== STATUS VA HANDLER ==========
+
+func StatusVa(c echo.Context) error {
+	// Set X-TIMESTAMP header
+	c.Response().Header().Set("X-TIMESTAMP", time.Now().Format(time.RFC3339))
+	c.Response().Header().Set("Content-Type", "application/json")
+
+	// Example: check for required query param (simulate error)
+	// vaNo := c.QueryParam("virtualAccountNo")
+	// if vaNo == "" {
+	// 	errResp := StatusVaErrorResponse{
+	// 		ResponseCode:       "5002600",
+	// 		ResponseMessage:    "General Error",
+	// 		VirtualAccountData: map[string]interface{}{},
+	// 	}
+	// 	return c.JSON(http.StatusBadRequest, errResp)
+	// }
+
+	// Success response (static example, replace with real data as needed)
+	resp := StatusVaResponse{
+		ResponseCode:    "2002600",
+		ResponseMessage: "Successful",
+		VirtualAccountData: StatusVaVirtualAccountData{
+			PartnerServiceId: "7421",
+			CustomerNo:       "000587616",
+			VirtualAccountNo: "7421000587616",
+			InquiryRequestId: "13432232",
+			PaymentRequestId: "",
+			PaidAmount: PaidAmount{
+				Currency: "IDR",
+				Value:    "0.00",
+			},
+			TotalAmount: PaidAmount{
+				Currency: "IDR",
+				Value:    "26900.00",
+			},
+			ReferenceNo:     "",
+			TrxDateTime:     "2024-02-28T16:56:05+07:00",
+			TransactionDate: "",
+		},
+		AdditionalInfo: StatusVaAdditionalInfo{
+			InsertId:   "293126",
+			TagId:      "293126",
+			TrxStatus:  "03",
+			TrxMessage: "Pending",
+		},
+	}
+	return c.JSON(http.StatusOK, resp)
+}
